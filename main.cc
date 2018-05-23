@@ -89,6 +89,10 @@ public:
 				sets = 0;
     }
 
+	int grootte() {
+		return n;
+	}
+
     bool mogelijke_set(int j) {
     
         return kaarten_index(0, j)
@@ -231,9 +235,9 @@ int main(int argc, char** argv) {
         char *bestand_naam = argv[1];
 
         Kaartspel spel(bestand_naam);
-        cout << spel.maxscore(9) << endl;
+        cout << spel.maxscore(spel.grootte() - 1) << endl;
 		cout << "Gebruikte sets: ";
-		spel.print_gebruikte_sets(9);
+		spel.print_gebruikte_sets(spel.grootte() - 1);
     }
 
     return 0;
