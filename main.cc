@@ -4,6 +4,22 @@
 
 using namespace std;
 
+template<class T>
+T* maak_array(int N, T waarde) {
+	T* arr = (T*)malloc(sizeof(T) * N);
+	for(int i = 0; i < N; i++) arr[i] = waarde;
+	return arr;
+}
+
+template<class T>
+void vul_array(T* arr, T waarde, int i, int N) {
+	for(int j = i; j < i + N; j++) arr[j] = waarde;
+}
+
+template<class T>
+void kopieer_array(T* van, T* naar, int i_van, int i_naar, int N) {
+	for(int i = 0; i < N; i++) naar[i_naar + i] = van[i_van + i];
+}
 
 class Kaartspel {
 
@@ -14,6 +30,9 @@ private:
 
     int *rijscore_arr;
     int *maxscore_arr;
+	
+	bool *mogelijke_sets;
+	bool *gebruikte_sets;
 
     // Index in rijscore
     // i >= 0, j >= 0
@@ -23,7 +42,7 @@ private:
 
     // Index in kaarten
     // i >= 0, j >= 0
-    int kaarten_index(int i, int j) {
+    bool kaarten_index(int i, int j) {
         return kaarten[i * n + j];
     }
 public:
@@ -34,19 +53,11 @@ public:
         n = 0;
         bestand >> n;
 
-        size_t bytes = sizeof(bool) * 4 * n;
-
-        kaarten = (bool*)malloc(bytes);
-        memset(kaarten, false, bytes);
-
-        bytes = sizeof(int) * n * n;
-        rijscore_arr = (int*)malloc(bytes);
-        memset(rijscore_arr, -1, bytes);
-
-        bytes = sizeof(int) * n;
-        maxscore_arr = (int*)malloc(bytes);
-        memset(maxscore_arr, -1, bytes);
-
+        kaarten = maak_array<bool>(4 * n, false);
+		rijscore_arr = maak_array<int>(n * n, -1);
+		maxscore_arr = maak_array<int>(n, -1);
+		mogelijke_sets = maak_array<bool>(n, false);
+		gebruikte_sets = maak_array<bool>(n * n, false);
 
         // i = -1, verwijder begi&nnende \r\n
         for(int i = -1, j = 0; i < 4;) {
@@ -63,9 +74,22 @@ public:
             kaarten[i * n + j] = kar == '1';
             j += 1;
         }
+
+		int sets = 0;
+		for(int i = 0; i < n; i++)
+			if(mogelijke_set(i)) {
+				sets++;
+				if(sets < 3)
+					mogelijke_sets[i] = true;
+				else if(sets == 3)
+					mogelijke_sets[i - 1] = mogelijke_sets[i - 2] = false;
+				// voor sets > 3 hoeft er niks te gebeuren, mogelijke_sets[i] is al false.
+			}
+			else
+				sets = 0;
     }
 
-    int mogelijke_set(int j) {
+    bool mogelijke_set(int j) {
     
         return kaarten_index(0, j)
             && kaarten_index(1, j)
@@ -121,11 +145,11 @@ public:
         
         if(j == 0) return 0;
           
-        int max_score = 0, k = 0;
+        int max_score = 0, rechter_set, k = 0;
 
         for(; k <= j; k++) { 
 
-            if(mogelijke_set(k)) {
+            if(mogelijke_sets[k]) {
                 // Max score door deze set toe te voegen.
                 // Het geval dat deze set de 'meest rechter set' is.
                 int set_score = 4 * (k + 1);
@@ -133,17 +157,38 @@ public:
                 int rijs = rijscore(k + 1, j);
 
                 int max_met_set = 4 * (k + 1) + maxscore(k - 1) + rijscore(k + 1, j);
-                if(max_met_set > max_score) max_score = max_met_set;
+				if(max_met_set > max_score) {
+					rechter_set = k;
+					max_score = max_met_set;
+				}
             }
         }
 
         // Maar wat als er geen 'meest rechter set' is?
-        // dan is de maximale score natuurlijk rijscore(0, n)
+        // dan is de maximale score natuurlijk rijscore(0, j)
         int zonder_set = rijscore(0, j);
-        if(zonder_set > max_score) max_score = zonder_set;
+		if(zonder_set > max_score) {
+			max_score = zonder_set;
+			// geen sets gebruikt, laat alles op false staan
+		}
+		else {
+			// zelfde sets gebruikt als bij max_score(rechter_set - 1)
+			// kopieer deze sets en voeg de nieuwe set toe
+			int van = (rechter_set - 1) * n;
+			int naar = j * n;
+			int lengte = rechter_set;
+			kopieer_array(gebruikte_sets, gebruikte_sets, van, naar, lengte);
+			gebruikte_sets[j * n + rechter_set] = true;
+		}
 
         return (maxscore_arr[j] = max_score);
     }
+
+	// geeft een array (met lengte j + 1) met de gebruikte sets door max_score(j)
+	// werkt alleen nadat max_score(j) is aangeroepen
+	bool* beste_sets(int j) {
+		return gebruikte_sets + j * n;
+	}
 
     void print_kaarten() {
 
@@ -159,6 +204,14 @@ public:
         }
 
     }
+
+	void print_gebruikte_sets(int j) {
+		bool* gebruikt = beste_sets(j);
+		for(int i = 0; i <= j; i++)
+			if(gebruikt[i])
+				cout << (i + 1) << ", ";
+		cout << endl;
+	}
 
     ~Kaartspel() {
 
@@ -179,6 +232,8 @@ int main(int argc, char** argv) {
 
         Kaartspel spel(bestand_naam);
         cout << spel.maxscore(9) << endl;
+		cout << "Gebruikte sets: ";
+		spel.print_gebruikte_sets(9);
     }
 
     return 0;
