@@ -13,7 +13,7 @@ private:
     size_t n;
 
     int *rijscore_arr;
-    int *maxscore;
+    int *maxscore_arr;
 
     // Index in rijscore
     // i >= 0, j >= 0
@@ -44,11 +44,11 @@ public:
         memset(rijscore_arr, -1, bytes);
 
         bytes = sizeof(int) * n;
-        maxscore = (int*)malloc(bytes);
-        memset(maxscore, -1, bytes);
+        maxscore_arr = (int*)malloc(bytes);
+        memset(maxscore_arr, -1, bytes);
 
 
-        // i = -1, verwijder beginnende \r\n
+        // i = -1, verwijder begi&nnende \r\n
         for(int i = -1, j = 0; i < 4;) {
 
             char kar = bestand.get();
@@ -65,6 +65,15 @@ public:
         }
     }
 
+    int mogelijke_set(int j) {
+    
+        return kaarten_index(0, j)
+            && kaarten_index(1, j)
+            && kaarten_index(2, j)
+            && kaarten_index(3, j);
+    }
+
+
     // Anders dan in opdracht:
     // i >= 0, j >= 0
     // Handiger met indexen
@@ -73,7 +82,7 @@ public:
         int huidig = rijscore_index(i, j);
         if(huidig != -1) return huidig;
           
-        if(i == j || i == j - 1) return (rijscore_arr[i * n + j] = 0);
+        if(i >= j || i == j - 1) return (rijscore_arr[i * n + j] = 0);
 
         // Bekijk of er voorgaande kaarten zijn
         // waarmee we een rij kunnen vormen
@@ -98,7 +107,42 @@ public:
             if(j - l == 4) score += j + 1; 
         }
 
-        return rijscore(i, j - 1) + score;
+        return (rijscore_arr[i * n + j] = rijscore(i, j - 1) + score);
+    }
+
+
+    // Anders dan in opdracht:
+    // j = 0 kan nog steeds punten opleveren.
+    // j is namelijk de index in maxscore_arr
+    int maxscore(int j) {
+    
+        int huidig = maxscore_arr[j];
+        if(huidig != -1) return huidig;
+        
+        if(j == 0) return 0;
+          
+        int max_score = 0, k = 0;
+
+        for(; k <= j; k++) { 
+
+            if(mogelijke_set(k)) {
+                // Max score door deze set toe te voegen.
+                // Het geval dat deze set de 'meest rechter set' is.
+                int set_score = 4 * (k + 1);
+                int max_vorige = maxscore(k - 1);
+                int rijs = rijscore(k + 1, j);
+
+                int max_met_set = 4 * (k + 1) + maxscore(k - 1) + rijscore(k + 1, j);
+                if(max_met_set > max_score) max_score = max_met_set;
+            }
+        }
+
+        // Maar wat als er geen 'meest rechter set' is?
+        // dan is de maximale score natuurlijk rijscore(0, n)
+        int zonder_set = rijscore(0, j);
+        if(zonder_set > max_score) max_score = zonder_set;
+
+        return (maxscore_arr[j] = max_score);
     }
 
     void print_kaarten() {
@@ -120,7 +164,7 @@ public:
 
         free(kaarten);
         free(rijscore_arr);
-        free(maxscore);
+        free(maxscore_arr);
     }
 
 };
@@ -134,7 +178,7 @@ int main(int argc, char** argv) {
         char *bestand_naam = argv[1];
 
         Kaartspel spel(bestand_naam);
-        cout << spel.rijscore(0, 9) << endl;
+        cout << spel.maxscore(9) << endl;
     }
 
     return 0;
