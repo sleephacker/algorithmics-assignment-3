@@ -5,42 +5,64 @@
 using namespace std;
 
 
-void print_kaarten(bool *kaarten, size_t n) {
+class Kaartspel {
 
-    for(int i = 0; i < 4; i++) {
+private:
 
-        for(int j = 0; j < n; j++) {
+    bool *kaarten;
+    size_t n;
 
-            if(kaarten[i * n + j]) cout << '1';
-            else cout << '0';
+public:
+    Kaartspel(char *bestand_naam) {
+
+        ifstream bestand(bestand_naam);
+
+        n = 0;
+        bestand >> n;
+
+        size_t bytes = sizeof(bool) * 4 * n;
+
+        kaarten = (bool*)malloc(bytes);
+        memset(kaarten, false, bytes);
+
+        // i = -1, verwijder beginnende \r\n
+        for(int i = -1, j = 0; i < 4;) {
+
+            char kar = bestand.get();
+
+            if(kar == '\r') continue;
+            if(kar == '\n') {
+                i += 1;
+                j = 0;
+                continue;
+            }
+
+            kaarten[i * n + j] = kar == '1';
+            j += 1;
         }
-
-        cout << endl;
     }
 
-}
+    void print_kaarten() {
 
-void lees_bestand_in(bool *kaarten, size_t n, ifstream& bestand) {
+        for(int i = 0; i < 4; i++) {
 
-    memset(kaarten, false, sizeof(bool) * 4 * n);
+            for(int j = 0; j < n; j++) {
 
-    // i = -1, verwijder beginnende \r\n
-    for(int i = -1, j = 0; i < 4;) {
+                if(kaarten[i * n + j]) cout << '1';
+                else cout << '0';
+            }
 
-        char kar = bestand.get();
-
-        if(kar == '\r') continue;
-        if(kar == '\n') {
-            i += 1;
-            j = 0;
-            continue;
+            cout << endl;
         }
 
-        kaarten[i * n + j] = kar == '1';
-        j += 1;
     }
-}
 
+    ~Kaartspel() {
+
+        free(kaarten);
+    }
+
+};
 
 int main(int argc, char** argv) {
 
@@ -49,21 +71,9 @@ int main(int argc, char** argv) {
     }
     else {
         char *bestand_naam = argv[1];
-        cout << "Inlezen: " << bestand_naam << endl;
 
-        ifstream bestand(bestand_naam);
-
-        int n = 0;
-        bestand >> n;
-        cout << "Grootte: " << n << endl;
-
-        bool *kaarten = (bool*)malloc(sizeof(bool) * 4 * n);
-
-        lees_bestand_in(kaarten, n, bestand);
-
-        print_kaarten(kaarten, n);
-
-        free(kaarten);
+        Kaartspel spel(bestand_naam);
+        spel.print_kaarten();
     }
 
     return 0;
