@@ -57,6 +57,13 @@ private:
 
     }
 
+	// geeft een array (met lengte j + 1) met de gebruikte sets door max_score(j)
+	// werkt alleen nadat max_score(j) is aangeroepen
+	bool* beste_sets(int j) {
+		return gebruikte_sets + j * n;
+	}
+
+
 public:
 
     Kaartspel(char *bestand_naam) {
@@ -186,11 +193,6 @@ public:
         return (maxscore_arr[j] = max_score);
     }
 
-	// geeft een array (met lengte j + 1) met de gebruikte sets door max_score(j)
-	// werkt alleen nadat max_score(j) is aangeroepen
-	bool* beste_sets(int j) {
-		return gebruikte_sets + j * n;
-	}
 
     void print_kaarten() {
 
@@ -208,10 +210,14 @@ public:
     }
 
 	void print_gebruikte_sets(int j) {
+
 		bool* gebruikt = beste_sets(j);
-		for(int i = 0; i <= j; i++)
-			if(gebruikt[i])
-				cout << (i + 1) << ", ";
+
+		for(int i = 0; i <= j; i++) {
+
+			if(gebruikt[i]) cout << (i + 1) << ", ";
+		}
+
 		cout << endl;
 	}
 
