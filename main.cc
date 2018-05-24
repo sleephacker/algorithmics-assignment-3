@@ -136,7 +136,7 @@ public:
 
             // l 'wijst' nu net voor de start
             // van een mogelijke rij.
-            // Waarde is één hoger dan index
+            // Waarde is een hoger dan index
 
             if(j - l == 3) score += (j + 1) + j + j - 1;
 

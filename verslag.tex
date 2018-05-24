@@ -1,0 +1,89 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+\usepackage{amsmath}
+
+\usepackage{setspace}
+
+\usepackage{listings}
+\usepackage{color}
+\definecolor{commentc}{rgb}{0, 0.5, 0}
+\definecolor{stringc}{rgb}{0.5, 0.1, 0}
+\definecolor{keywordc}{rgb}{0, 0.25, 1}
+\definecolor{linenumc}{rgb}{0.5, 0.5, 0.5}
+\lstset{language=C++, showstringspaces=false, basicstyle={\small \ttfamily},
+  numbers=left, numberstyle={\small \color{linenumc} \ttfamily}, numberfirstline=false, breaklines=true,
+  stepnumber=1, tabsize=4, 
+  commentstyle=\color{commentc},
+  stringstyle=\color{stringc}, keywordstyle=\color{keywordc}
+}
+
+
+\renewcommand{\baselinestretch}{1.25} 
+\usepackage[
+    top    = 1.5cm,
+    bottom = 4cm,
+    left   = 3.00cm,
+    right  = 2.50cm]{geometry}
+    
+\title{Algoritmiek - Programmeeropdracht Drie}
+\author{Jelle van Cappelle \and L\'eon van Velzen}
+\date{May 2018}
+
+\usepackage{natbib}
+\usepackage{graphicx}
+
+\begin{document}
+
+\maketitle
+
+\section{Introductie}
+
+Een kaartspel wordt als volgt gespeeld. Voor elke soort kaart (schoppen, hart, ruiten, klaveren) liggen er vier rijen op tafel onder elkaar. De kolommen van deze rijen zijn genummerd van 1 tot $n \ge 1$. In elk vakje gevormd door deze rijen en kolommen ligt ofwel een kaart ofwel geen kaart. De speler kan punten verdienen door \emph{rijen} en \emph{sets} te vormen. Een rij bestaat uit drie of meer op\'e\'envolgende kaarten in dezelfde rij. Een set bestaat uit vier dezelfde kaarten in dezelfde kolom. Een kaart in een set of rij levert evenveel punten op als de kolom waarin het zich bevindt. De vraag is nu hoe er sets en rijenuit het spel gehaald moeten worden zodat de score maximaal is. Het bijgevoegde programma berekent deze maximale score en bepaalt welke sets uit het spel gehaald moeten worden om deze maximale score te behalen.
+
+\section{Oplossingsstrategie}
+
+Het algoritme dat door het programma gebruikt wordt berust op het volgende inzicht: een optimale oplossing bevat een set of bevat geen set. Verder moet in het geval dat de oplossing een set bevat de oplossing ook een \emph{meest rechter set} bevatten. We defini\"eren nu de functie maxscore(j) als
+
+$$
+\text{maxscore}(j) = \text{het maximale aantal punten dat je kunt behalen door sets een rijen te vormen uit de aanwezige speelkaarten met waardes 1, ... } j + 1
+$$
+
+Op basis van het vorige inzicht kunnen we deze functie recursief implementeren. Hiervoor hebben we de volgende functie nodig
+
+$$
+\text{rijscore}(i,j) = \text{het maximale aantal punten dat je kunt behalen door alleen rijen te vormen uit de aanwezige speelkaarten in kolommen} i + 1, \ldots, j+1
+$$
+
+Deze functie kunnen we ook recursief implementeren. Laten we eerst bekijken hoe deze functie ons helpt bij het implementeren van maxscore.
+
+$$
+\text{maxscore}(0) = 0
+$$
+
+$$
+\text{maxscore}(j) = \text{max}(\text{rijscore}(0, j), \max_{0 \le k \le j \ \land \ \text{mogelijkeset}(k)} \ (\text{maxscore}(j - 1) + 4\cdot (k + 1) +  \text{rijscore}(k + 1, j)))
+$$
+
+Zoals aangegeven stelt $k$ de kolom \emph{index} voor van een mogelijke meest rechter set. In het geval dat $k$ de meest rechter set is kunnen er tussen $k$ en $j$ alleen maar rijen aanwezig zijn. De term $4 \cdot (k + 1)$ stelt de waarde van de set met index $k$ voor. 
+
+De functie rijscore(i, j) kan ook recursief geimplementeerd worden. Laat $k$ het aantal aanwezige kaarten zijn dat zonder onderbrekingen voorafgaat aan de kaart in rij $i$ en kolom $k$. Om de bijdrage van deze kaart aan de score te berekenen moeten we verschillende mogelijkheden voor $k$ apart bekijken.
+
+$$
+\text{rijscore\_kaart}(i, j) = \begin{cases}
+    0 & \text{als} \ k \le 1 \\
+    (j + 1) + j + (j - 1) & \text{als} \  k = 2 \\
+    j + 1 & \text{als} \  k \ge 3
+\end{cases}
+$$
+
+In het eerste geval is het niet mogelijk een rij te vormen. In het tweede geval kan er een rij gevormd worden met de twee voorliggende kaarten. In het laatste geval wordt alleen de score $j + 1$ meegenomen aangezien de rest van de punten voor deze rij al wordt meegenomen in de recursieve aanroep rijscore(i, j - 1).
+
+
+
+
+\section{main.cc}
+
+\lstinputlisting{main.cc}
+
+\end{document}
