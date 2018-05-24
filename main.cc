@@ -146,10 +146,6 @@ public:
             if(mogelijke_sets[k]) {
                 // Max score door deze set toe te voegen.
                 // Het geval dat deze set de 'meest rechter set' is.
-                int set_score = 4 * (k + 1);
-                int max_vorige = maxscore(k - 1);
-                int rijs = rijscore(k + 1, j);
-
                 int max_met_set = 4 * (k + 1) + maxscore(k - 1) + rijscore(k + 1, j);
 				if(max_met_set > max_score) {
 					rechter_set = k;
