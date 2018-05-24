@@ -35,7 +35,30 @@ private:
     bool kaarten_index(int i, int j) {
         return kaarten[i * n + j];
     }
+
+    void vul_mogelijke_sets() {
+
+        int sets = 0;
+
+		for(int i = 0; i < n; i++) {
+
+			if(mogelijke_set(i)) {
+				sets++;
+
+				if(sets < 3) mogelijke_sets[i] = true;
+				else if(sets == 3) {
+				    
+				    mogelijke_sets[i - 1] = mogelijke_sets[i - 2] = false;
+				}
+				// voor sets > 3 hoeft er niks te gebeuren, mogelijke_sets[i] is al false.
+			}
+			else sets = 0;
+        }
+
+    }
+
 public:
+
     Kaartspel(char *bestand_naam) {
 
         ifstream bestand(bestand_naam);
@@ -65,18 +88,7 @@ public:
             j += 1;
         }
 
-		int sets = 0;
-		for(int i = 0; i < n; i++)
-			if(mogelijke_set(i)) {
-				sets++;
-				if(sets < 3)
-					mogelijke_sets[i] = true;
-				else if(sets == 3)
-					mogelijke_sets[i - 1] = mogelijke_sets[i - 2] = false;
-				// voor sets > 3 hoeft er niks te gebeuren, mogelijke_sets[i] is al false.
-			}
-			else
-				sets = 0;
+        vul_mogelijke_sets();
     }
 
 	int grootte() {
