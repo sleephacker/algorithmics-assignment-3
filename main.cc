@@ -11,16 +11,6 @@ T* maak_array(int N, T waarde) {
 	return arr;
 }
 
-template<class T>
-void vul_array(T* arr, T waarde, int i, int N) {
-	for(int j = i; j < i + N; j++) arr[j] = waarde;
-}
-
-template<class T>
-void kopieer_array(T* van, T* naar, int i_van, int i_naar, int N) {
-	for(int i = 0; i < N; i++) naar[i_naar + i] = van[i_van + i];
-}
-
 class Kaartspel {
 
 private:
@@ -181,7 +171,7 @@ public:
 			int van = (rechter_set - 1) * n;
 			int naar = j * n;
 			int lengte = rechter_set;
-			kopieer_array(gebruikte_sets, gebruikte_sets, van, naar, lengte);
+            memcpy(gebruikte_sets + naar, gebruikte_sets + van, sizeof(int) * lengte);
 			gebruikte_sets[j * n + rechter_set] = true;
 		}
 
