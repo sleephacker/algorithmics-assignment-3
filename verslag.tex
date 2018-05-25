@@ -43,27 +43,13 @@ Een kaartspel wordt als volgt gespeeld. Voor elke soort kaart (schoppen, hart, r
 
 \section{Oplossingsstrategie}
 
-Het algoritme dat door het programma gebruikt wordt berust op het volgende inzicht: een optimale oplossing bevat een set of bevat geen set. Verder moet in het geval dat de oplossing een set bevat de oplossing ook een \emph{meest rechter set} bevatten. We defini\"eren nu de functie maxscore(j) als
+Het algoritme dat door het programma gebruikt wordt berust op het volgende inzicht: een optimale oplossing bevat een set of bevat geen set. Verder moet in het geval dat de oplossing een set bevat de oplossing ook een \emph{meest rechter set} bevatten. We defini\"eren nu de functie maxscore(j) als het maximale aantal punten dat je kunt behalen door sets een rijen te vormen uit de aanwezige speelkaarten met waardes $1, \ldots, j$. Op basis van het vorige inzicht kunnen we deze functie recursief implementeren.
+Hiervoor hebben we wel de functie rijscore(i, j) nodig die we defini\"eren als het maximale aantal punten dat je kunt behalen door alleen rijen te vormen uit de aanwezige speelkaarten in kolommen $i + 1, \ldots, j + 1$.  Deze functie kunnen we ook recursief implementeren. Laten we eerst bekijken hoe deze functie ons helpt bij het implementeren van maxscore.
 
-$$
-\text{maxscore}(j) = \text{het maximale aantal punten dat je kunt behalen door sets een rijen te vormen uit de aanwezige speelkaarten met waardes 1, ... } j + 1
-$$
-
-Op basis van het vorige inzicht kunnen we deze functie recursief implementeren. Hiervoor hebben we de volgende functie nodig
-
-$$
-\text{rijscore}(i,j) = \text{het maximale aantal punten dat je kunt behalen door alleen rijen te vormen uit de aanwezige speelkaarten in kolommen} i + 1, \ldots, j+1
-$$
-
-Deze functie kunnen we ook recursief implementeren. Laten we eerst bekijken hoe deze functie ons helpt bij het implementeren van maxscore.
-
-$$
-\text{maxscore}(0) = 0
-$$
-
-$$
-\text{maxscore}(j) = \text{max}(\text{rijscore}(0, j), \max_{0 \le k \le j \ \land \ \text{mogelijkeset}(k)} \ (\text{maxscore}(j - 1) + 4\cdot (k + 1) +  \text{rijscore}(k + 1, j)))
-$$
+\begin{align*}
+\text{maxscore}(0) &= 0 \\
+\text{maxscore}(j) &= \text{max}(\text{rijscore}(0, j), \max_{0 \le k \le j \ \land \ \text{mogelijkeset}(k)} \ (\text{maxscore}(j - 1) + 4\cdot (k + 1) +  \text{rijscore}(k + 1, j)))
+\end{align*}
 
 Zoals aangegeven stelt $k$ de kolom \emph{index} voor van een mogelijke meest rechter set. In het geval dat $k$ de meest rechter set is kunnen er tussen $k$ en $j$ alleen maar rijen aanwezig zijn. De term $4 \cdot (k + 1)$ stelt de waarde van de set met index $k$ voor. 
 
@@ -77,10 +63,32 @@ $$
 \end{cases}
 $$
 
-In het eerste geval is het niet mogelijk een rij te vormen. In het tweede geval kan er een rij gevormd worden met de twee voorliggende kaarten. In het laatste geval wordt alleen de score $j + 1$ meegenomen aangezien de rest van de punten voor deze rij al wordt meegenomen in de recursieve aanroep rijscore(i, j - 1).
+In het eerste geval is het niet mogelijk een rij te vormen. In het tweede geval kan er een rij gevormd worden met de twee voorliggende kaarten. In het laatste geval wordt alleen de score $j + 1$ meegenomen aangezien de rest van de punten voor deze rij al wordt meegenomen in de recursieve aanroep $\text{rijscore}(i, j - 1)$.
+
+$$
+\text{rijscore}(i, j) = \text{rijscore}(i, j - 1) + \sum_{i = 0}^{3} \  \text{rijscore\_kaart}(i, j)
+$$
 
 
+\section{Resultaten van ons programma}
 
+\subsection{n = 10}
+
+Maximale score is 146. Hiervoor moet set 10 gebruikt worden.
+
+\lstinputlisting{kaartspel1.in}
+
+\subsection{n = 30}
+
+Maximale score is 6714. Hiervoor moeten er geen sets gebruikt worden.
+
+\lstinputlisting{kaartspel2.in}
+
+\subsection{n = 100}
+
+Maximale score is 4140. Hiervoor moet set 29 gebruikt worden.
+
+\lstinputlisting{kaartspel2.in}
 
 \section{main.cc}
 
