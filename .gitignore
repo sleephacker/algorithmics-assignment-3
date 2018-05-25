@@ -1,3 +1,6 @@
 *.swp
 *.out
 core
+verslag.aux
+verslag.pdf
+verslag.log
