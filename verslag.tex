@@ -73,6 +73,7 @@ $$
 
 Zoals hierboven beschreven is $\text{maxscore}(j)$ een recursieve functie die na gaat waar de meest rechter set set gevormd moet worden om de maximale score te behalen met de kaarten met waardes $1, \ldots, j$. Stel dat dit de set van kaarten met waarde $i$ is, dan bepaalt $\text{maxscore}(i - 1)$ waar de op één na meest rechter set moet komen, enzovoorts.
 Als voor $\text{maxscore}(i - 1)$ bekend is welke sets gevormd moeten worden om deze score te behalen, dan zijn de sets die gevormd moeten worden om de score van $\text{maxscore}(j)$ te behalen ook te bepalen, namelijk dezelfde sets plus de nieuwe meest rechter set. Wij maken van dit inzicht gebruik in ons programma om een array met gebruikte sets bij te houden voor iedere mogelijke aanroep van $\text{maxscore}(j)$. De array voor $\text{maxscore}(j)$ wordt in dit voorbeeld dus gevuld met een kopie van de array voor $\text{maxscore}(i - 1)$, waarna de nieuwe set (indien die er is) wordt toegevoegd.
+\par Als de gebruikte sets van een oplossing bekend zijn dan is het vinden van de rijen triviaal. Er moeten namelijk simpelweg zo lang mogelijke rijen gemaakt worden op alle plekken waar rijen gemaakt kunnen worden na het maken van de sets. Het is dus voldoende om alleen de sets van een optimale oplossing te weten om ook de rijen en daarmee de volledige oplossing te weten.
 
 \section{Complexiteit}
 
