@@ -16,7 +16,7 @@ class Kaartspel {
 private:
 
     bool *kaarten;
-    size_t n;
+    int n;
 
     int *rijscore_arr;
     int *maxscore_arr;
