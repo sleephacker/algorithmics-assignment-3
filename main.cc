@@ -158,7 +158,7 @@ public:
         
         if(j == 0) return 0;
           
-        int max_score = 0, rechter_set, k = 0;
+        int max_score = 0, rechter_set = -1, k = 0;
 
         for(; k <= j; k++) { 
 
@@ -176,7 +176,7 @@ public:
         // Maar wat als er geen 'meest rechter set' is?
         // dan is de maximale score natuurlijk rijscore(0, j)
         int zonder_set = rijscore(0, j);
-		if(zonder_set > max_score) {
+		if((zonder_set > max_score) || rechter_set == -1) {
 			max_score = zonder_set;
 			// geen sets gebruikt, laat alles op false staan
 		}
@@ -230,19 +230,39 @@ public:
 
 };
 
-int main(int argc, char** argv) {
+int main() {
 
-    if(argc < 2) {
-        cout << "Geef aub een invoerbestand mee" << endl;
-    }
-    else {
-        char *bestand_naam = argv[1];
+	char in, *bestand = new char[1000];
+	while(true) {
+		cout << "1. Los een kaartspel op" << endl;
+		cout << "2. Stop het programma" << endl;
+		cout << "Maak een keuze: ";
+		cin >> in;
+		switch(in) {
+			case '1':
+			{
+				cout << "Geef een invoerbestand op: ";
+				memset(bestand, 0, 1000 * sizeof(char));
+				cin >> bestand;
 
-        Kaartspel spel(bestand_naam);
-        cout << spel.maxscore(spel.grootte() - 1) << endl;
-		cout << "Gebruikte sets: ";
-		spel.print_gebruikte_sets(spel.grootte() - 1);
-    }
+				if(!ifstream(bestand).good()) {
+					cout << "Kan het opgegeven bestand niet openen." << endl;
+					break;
+				}
+				
+				Kaartspel spel(bestand);
+				cout << spel.maxscore(spel.grootte() - 1) << endl;
+				cout << "Gebruikte sets: ";
+				spel.print_gebruikte_sets(spel.grootte() - 1);
+				break;
+			}
+			case '2':
+				return 0;
+			default:
+				break;
+		}
+		cout << endl;
+	}
 
     return 0;
 }
