@@ -69,6 +69,24 @@ $$
 \text{rijscore}(i, j) = \text{rijscore}(i, j - 1) + \sum_{i = 0}^{3} \  \text{rijscore\_kaart}(i, j)
 $$
 
+\subsection{Het bijhouden van de gebruikte sets}
+
+Zoals hierboven beschreven is $\text{maxscore}(j)$ een recursieve functie die na gaat waar de meest rechter set set gevormd moet worden om de maximale score te behalen met de kaarten met waardes $1, \ldots, j$. Stel dat dit de set van kaarten met waarde $i$ is, dan bepaalt $\text{maxscore}(i - 1)$ waar de op één na meest rechter set moet komen, enzovoorts.
+Als voor $\text{maxscore}(i - 1)$ bekend is welke sets gevormd moeten worden om deze score te behalen, dan zijn de sets die gevormd moeten worden om de score van $\text{maxscore}(j)$ te behalen ook te bepalen, namelijk dezelfde sets plus de nieuwe meest rechter set. Wij maken van dit inzicht gebruik in ons programma om een array met gebruikte sets bij te houden voor iedere mogelijke aanroep van $\text{maxscore}(j)$. De array voor $\text{maxscore}(j)$ wordt in dit voorbeeld dus gevuld met een kopie van de array voor $\text{maxscore}(i - 1)$, waarna de nieuwe set (indien die er is) wordt toegevoegd.
+
+\section{Complexiteit}
+
+De complexiteit van ons algoritme is $O(n^3)$. Omdat we de resultaten van iederen aanroep aan $\text{maxscore}(j)$ opslaan in een array (de cache), en omdat $\text{maxscore}(n)$ alleen afhankelijk kan zijn van alle waardes van $\text{maxscore}(j < n)$, is de complexiteit van deze functie dus in het ergste geval gelijk aan de complexiteit van het uitrekenen van iedere $\text{maxscore}(j < n)$ gegeven dat iedere $\text{maxscore}(i < j)$ al bekend is en in de cache zit. De complexiteit $C$ van $\text{maxscore}(n)$ is in dat geval:
+
+$$C_{\text{maxscore}(n)\text{, cache leeg}} = \sum_{j = 0}^{n} \ C_{\text{maxscore}(j)\text{, cache vol}}$$
+
+Wanneer de cache vol zit heeft iedere aanroep van $\text{maxscore}(i < j)$ een complexiteit van $O(1)$, en dus geldt hiervoor:
+
+$$C_{\text{maxscore}(j)\text{, cache vol}} = C_{\text{for-loop}} * (C_{\text{maxscore}(i < j)} + C_{\text{rijscore}}) = O(j) * (O(1) + O(j)) = O(j) * O(j) = O(j^2)$$
+
+De totale complexiteit wordt dus:
+
+$$C_{\text{maxscore}(n)\text{, cache leeg}} = \sum_{j = 0}^{n} \ C_{\text{maxscore}(j)\text{, cache vol}} = O(n) * O(n^2) = O(n^3)$$
 
 \section{Resultaten van ons programma}
 
@@ -80,7 +98,7 @@ Maximale score is 146. Hiervoor moet set 10 gebruikt worden.
 
 \subsection{n = 30}
 
-Maximale score is 6714. Hiervoor moeten er geen sets gebruikt worden.
+Maximale score is 1149. Hiervoor moeten er geen sets gebruikt worden.
 
 \lstinputlisting{kaartspel2.in}
 
@@ -88,7 +106,7 @@ Maximale score is 6714. Hiervoor moeten er geen sets gebruikt worden.
 
 Maximale score is 4140. Hiervoor moet set 29 gebruikt worden.
 
-\lstinputlisting{kaartspel2.in}
+\lstinputlisting{kaartspel4.in}
 
 \section{main.cc}
 
