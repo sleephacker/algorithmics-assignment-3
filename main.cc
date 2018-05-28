@@ -230,9 +230,11 @@ public:
 
     ~Kaartspel() {
 
-	delete[] kaarten;
-	delete[] rijscore_arr;
-	delete[] maxscore_arr;
+        delete[] kaarten;
+        delete[] rijscore_arr;
+        delete[] maxscore_arr;
+        delete[] gebruikte_sets;
+        delete[] mogelijke_sets;
     }
 
 };
