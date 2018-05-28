@@ -1,12 +1,13 @@
 #include <iostream>
 #include <fstream>
 #include <cstring>
+#include <string>
 
 using namespace std;
 
 template<class T>
 T* maak_array(int N, T waarde) {
-	T* arr = (T*)malloc(sizeof(T) * N);
+	T* arr = new T[N];
 	for(int i = 0; i < N; i++) arr[i] = waarde;
 	return arr;
 }
@@ -223,9 +224,9 @@ public:
 
     ~Kaartspel() {
 
-        free(kaarten);
-        free(rijscore_arr);
-        free(maxscore_arr);
+	delete[] kaarten;
+	delete[] rijscore_arr;
+	delete[] maxscore_arr;
     }
 
 };
