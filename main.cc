@@ -117,10 +117,12 @@ public:
     // Handiger met indexen
     int rijscore(int i, int j) {
      
+        if(i > j || i >= n || j >= n) return 0; // Veiligheids check
+        
         int huidig = rijscore_index(i, j);
         if(huidig != -1) return huidig;
           
-        if(i >= j || i == j - 1) return (rijscore_arr[i * n + j] = 0);
+        if(i == j || i == j - 1) return (rijscore_arr[i * n + j] = 0);
 
         // Bekijk of er voorgaande kaarten zijn
         // waarmee we een rij kunnen vormen
