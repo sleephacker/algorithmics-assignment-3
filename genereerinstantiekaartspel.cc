@@ -15,35 +15,35 @@ using namespace std;
 
 //****************************************************************************
 
-int main ()
-{ int n,
-      kans,
-      kleur, i,
-      r;
+int main() {
+	int n,
+		kans,
+		kleur, i,
+		r;
 
-  cout << "Geef n: ";
-  cin >> n;
-  cout << "Geef een geheel getal tussen (en inclusief) 0 en 100,\n";
-  cout << "  de kans (als percentage) voor een willekeurige kaart\n";
-  cout << "  om aanwezig te zijn: ";
-  cin >> kans;
-  
-  cout << endl;
-  cout << n << endl;
+	cout << "Geef n: ";
+	cin >> n;
+	cout << "Geef een geheel getal tussen (en inclusief) 0 en 100,\n";
+	cout << "  de kans (als percentage) voor een willekeurige kaart\n";
+	cout << "  om aanwezig te zijn: ";
+	cin >> kans;
 
-  srand ((unsigned)time(0));
-  for (kleur=1;kleur<=4;kleur++)
-  { for (i=1;i<=n;i++)
-    { r = ((rand())%100) + 1;  // een random geheel getal tussen
-                               // (en inclusief) 1 en 100
-      if (r<=kans)
-        cout << '1';
-      else
-        cout << '0';
-    }
-    cout << endl;
-  }
+	cout << endl;
+	cout << n << endl;
 
-  return 0;
+	srand((unsigned)time(0));
+	for(kleur = 1; kleur <= 4; kleur++) {
+		for(i = 1; i <= n; i++) {
+			r = ((rand()) % 100) + 1;  // een random geheel getal tussen
+									// (en inclusief) 1 en 100
+			if(r <= kans)
+				cout << '1';
+			else
+				cout << '0';
+		}
+		cout << endl;
+	}
+
+	return 0;
 
 }
