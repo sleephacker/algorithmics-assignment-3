@@ -240,7 +240,9 @@ public:
 
 int main() {
 
-	char in, *bestand = new char[1000];
+	char in;
+	char bestand[1000];
+    
 	while(true) {
 		cout << "1. Los een kaartspel op" << endl;
 		cout << "2. Stop het programma" << endl;
