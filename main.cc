@@ -252,9 +252,10 @@ int main() {
 				}
 				
 				Kaartspel spel(bestand);
-				cout << spel.maxscore(spel.grootte() - 1) << endl;
+				cout << "Maximale score: " << spel.maxscore(spel.grootte() - 1) << endl;
 				cout << "Gebruikte sets: ";
 				spel.print_gebruikte_sets(spel.grootte() - 1);
+				
 				break;
 			}
 			case '2':
@@ -265,5 +266,5 @@ int main() {
 		cout << endl;
 	}
 
-    return 0;
+	return 0;
 }
