@@ -186,10 +186,14 @@ public:
 		else {
 			// zelfde sets gebruikt als bij max_score(rechter_set - 1)
 			// kopieer deze sets en voeg de nieuwe set toe
-			int van = (rechter_set - 1) * n;
-			int naar = j * n;
-			int lengte = rechter_set;
-            memcpy(gebruikte_sets + naar, gebruikte_sets + van, sizeof(int) * lengte);
+			if(rechter_set > 0) {
+                int van = (rechter_set - 1) * n;
+                int naar = j * n;
+                int lengte = rechter_set;
+                
+                memcpy(gebruikte_sets + naar, gebruikte_sets + van, sizeof(bool) * lengte);
+            }
+
 			gebruikte_sets[j * n + rechter_set] = true;
 		}
 
